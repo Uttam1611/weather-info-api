@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'weather',
-
 ]
 
 MIDDLEWARE = [
@@ -82,7 +81,7 @@ ASGI_APPLICATION = 'weather_project.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blog',
+        'NAME': 'weather',
         'USER': 'postgres',
         'PASSWORD': 'Ut12345',
         'HOST': 'localhost',
