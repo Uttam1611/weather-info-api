@@ -106,12 +106,7 @@ http://127.0.0.1:8000/
 ---
 
 ## 🧑‍💻 Author
-**Your Name** – [GitHub](https://github.com/your-username)
-
----
-
-## 📝 License
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+**Your Name** – [GitHub](https://github.com/Uttam1611)
 
 ---
 
