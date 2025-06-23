@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Weather Info</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, padding: 1rem; }
+    .weather-info { margin-bottom: 2rem; }
+    canvas { max-width: 600px; }
+  </style>
+</head>
+<body>
+  <h1>Weather Info</h1>
+  <input id="cityInput" placeholder="Enter City">
+  <button id="getWeatherButton">Get Weather</button>
+  <div class="weather-info" id="weatherInfo"></div>
+  <canvas id="historyChart" width="600" height="200"></canvas>
+
+  <script>
+    let chart;
+
+    document.getElementById('getWeatherButton').addEventListener('click', getWeather);
+
+    async function getWeather() {
+      const city = document.getElementById('cityInput').value.trim();
+      if (!city) return alert('Please enter a city.');
+      try {
+        const res = await fetch(`/api/weather/?city=${city}`);
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+        const data = await res.json();
+
+        // Display current weather
+        const current = data.current;
+        document.getElementById('weatherInfo').innerHTML = `
+          <h2>${current.name}</h2>
+          <p>${current.weather[0].description}, ${current.main.temp}°C</p>
+        `;
+
+        // Draw chart with hourly data
+        drawChart(city, data.hourly || []);
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching weather. Check the console.');
+      }
+    }
+
+    function drawChart(city, hourlyData) {
+      if (hourlyData.length === 0) {
+        document.getElementById('historyChart').getContext('2d')
+          .clearRect(0, 0, 600, 200); // clear canvas if empty
+        return;
+      }
+
+      const labels = hourlyData.map(h => new Date(h.dt * 1000).getHours() + ':00');
+      const temps = hourlyData.map(h => h.main.temp);
+
+      const ctx = document.getElementById('historyChart').getContext('2d');
+      if (chart) chart.destroy();
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `Hourly Temp (${city})`,
+            data: temps,
+            borderColor: 'orange',
+            fill: false,
+            tension: 0.1
+          }]
+        },
+        options: { scales: { y: { beginAtZero: false } } }
+      });
+    }
+  </script>
+</body>
+</html>
